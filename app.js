@@ -1,11 +1,29 @@
-const PORT = 5000;
+require('dotenv').config();
+const PORT = process.env.PORT || 5000;
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const xss = require('express-xss-sanitizer');
-const rate_limitter = require('express-rate-limit');
+const {xss} = require('express-xss-sanitizer');
+const {rateLimit} = require('express-rate-limit');
 const helmet = require('helmet');
+const { connect_db } = require("./config/db.config");
+
+const limiter = rateLimit({
+	windowMs: 60 * 60 * 1000, // 15 minutes
+	limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+    message : 'Too many requests from this IP, please try again later',
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+	// store: ... , // Redis, Memcached, etc. See below.
+});
+
+app.use(cors());
+app.use(bodyParser.json());
+app.use(helmet());
+app.use(xss());
+app.use(limiter);
+
+connect_db(app);
 
 app.use("*", (req, res) => {
     return res.status(404).json({
@@ -14,8 +32,10 @@ app.use("*", (req, res) => {
     })
 });
 
-app.listen(PORT, () => {
-    console.log("---------------------------------");
-    console.log(`  🚀 App is listening on ${PORT} 🚀`);
-    console.log("---------------------------------");
+app.on('ready', () => {
+    app.listen(PORT, () => {
+        console.log("---------------------------------");
+        console.log(`  🚀 App is listening on ${PORT} 🚀`);
+        console.log("---------------------------------");
+    });
 });
