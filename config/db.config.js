@@ -1,10 +1,10 @@
 require('dotenv').config();
 const { Sequelize } = require('sequelize');
 
-console.log("database host ========> ",process.env.DB_HOST);
-console.log("database pass ========> ",process.env.DB_PASSWORD);
-console.log("database user ========> ",process.env.DB_USERNAME);
-console.log("database db ========> ",process.env.DB_NAME);
+// console.log("database host ========> ",process.env.DB_HOST);
+// console.log("database pass ========> ",process.env.DB_PASSWORD);
+// console.log("database user ========> ",process.env.DB_USERNAME);
+// console.log("database db ========> ",process.env.DB_NAME);
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
