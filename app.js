@@ -9,7 +9,7 @@ const {rateLimit} = require('express-rate-limit');
 const helmet = require('helmet');
 const { connect_db } = require("./config/db.config");
 const { transform } = require('./src/middlewares/interceptors/request.interceptor');
-const router = require('./src/routes/routes');
+const routes = require('./src/routes/routes');
 
 const limiter = rateLimit({
 	windowMs: 60 * 60 * 1000, // 15 minutes
@@ -25,16 +25,9 @@ app.use(helmet());
 app.use(xss());
 app.use(limiter);
 app.use(transform);
-app.use(router);
+app.use(routes);
 
 connect_db(app);
-
-app.use("*", (req, res) => {
-    return res.status(404).json({
-        status : false,
-        message : "The page you are looking for does not exists."
-    })
-});
 
 app.on('ready', () => {
     app.listen(PORT, () => {

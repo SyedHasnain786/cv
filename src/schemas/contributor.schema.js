@@ -1,7 +1,7 @@
 const { UUIDV4, DataTypes } = require("sequelize");
 const { sequelize } = require("../../config/db.config");
 
-const OpenSource = sequelize.define('openSource', {
+const Contributor = sequelize.define('contributor', {
     id: {
         type: DataTypes.UUIDV4,     // unique id
         primaryKey: true,
@@ -10,21 +10,24 @@ const OpenSource = sequelize.define('openSource', {
             isUUID: 4
         }
     },
-    description: {
-        type: DataTypes.TEXT        // open source project description
+    name: {
+        type: DataTypes.STRING      // name of the contributor
     },
-    url: {
-        type: DataTypes.STRING      // url of the open source project
+    email: {
+        type: DataTypes.STRING,     // email of the contributor
+        validate: {
+            isEmail: true
+        }
     },
-    githubURL: {
-        type: DataTypes.STRING      // github repo url of the open source project
+    phoneNumber: {
+        type: DataTypes.STRING,     // number of the contributor
     },
-    userId: {
-        type: DataTypes.UUIDV4,     // user
+    openSourceId: {
+        type: DataTypes.UUIDV4,     // open source project id
         validate: {
             isUUID: 4
         }
-    },
+    }
 }, {
     timestamps: true,
     createdAt: 'createdAt',
@@ -32,4 +35,4 @@ const OpenSource = sequelize.define('openSource', {
     deletedAt: 'deletedAt'
 });
 
-module.exports = OpenSource;
+module.exports = Contributor;

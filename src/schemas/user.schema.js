@@ -1,26 +1,40 @@
 const { UUIDV4, DataTypes } = require("sequelize");
 const { sequelize } = require("../../config/db.config");
+const Role = require("./role.schema");
+const Blog = require("./blog.schema");
 
 const User = sequelize.define('user', {
     id: {
-        type: DataTypes.UUID,
+        type: DataTypes.UUID,       // unique id 
         primaryKey: true,
-        defaultValue: UUIDV4
+        defaultValue: UUIDV4,
+        validate: {
+            isUUID: 4
+        }
     },
     firstName: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING,     // first name
     },
     lastName: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING      // last name
     },
     email: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING,     // email
+        validate: {
+            isEmail: true
+        }
     },
     phoneNumber: {
-        type: DataTypes.NUMBER,
+        type: DataTypes.STRING,     // phone number
     },
     aboutMe: {
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT        // about me
+    },
+    roleId: {
+        type: DataTypes.UUIDV4,     // role
+        validate: {
+            isUUID: 4
+        }
     }
 }, {
     timestamps: true,
@@ -28,5 +42,17 @@ const User = sequelize.define('user', {
     updatedAt: 'updatedAt',
     deletedAt: 'deletedAt'
 });
+
+User.belongsTo(Role, {
+    as: "role",
+    foreignKey: 'roleId',
+    targetKey: 'id'
+});
+
+User.belongsTo(Blog, {
+    type: 'blog',
+    foreignKey: 'id',
+    targetKey: 'userId'
+})
 
 module.exports = User;

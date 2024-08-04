@@ -1,7 +1,8 @@
 const { UUIDV4, DataTypes } = require("sequelize");
 const { sequelize } = require("../../config/db.config");
+const User = require("./user.schema");
 
-const Blog = sequelize.define('blog', {
+const Role = sequelize.define('role', {
     id: {
         type: DataTypes.UUIDV4,     // unique id
         primaryKey: true,
@@ -10,21 +11,15 @@ const Blog = sequelize.define('blog', {
             isUUID: 4
         }
     },
-    siteURL: {
-        type: DataTypes.STRING,     // site url of blog
+    role: {
+        type: DataTypes.STRING      // role
     },
-    thumbnailURL: { 
-        type: DataTypes.STRING,     // thumbnail url to be displayed
-    },
-    title: {
-        type: DataTypes.STRING,     // title of the blog
-    },
-    userId: {
-        type: DataTypes.UUIDV4,     // author of blog
+    slug: {
+        type: DataTypes.STRING,     //  lowercase value seperated with '_'
         validate: {
-            isUUID: 4
+            isLowercase: true
         }
-    },
+    }
 }, {
     timestamps: true,
     createdAt: 'createdAt',
@@ -32,4 +27,9 @@ const Blog = sequelize.define('blog', {
     deletedAt: 'deletedAt'
 });
 
-module.exports = Blog;
+Role.hasMany(User, {
+    type: 'user',
+    foreignKey: 'id'
+});
+
+module.exports = Role;
